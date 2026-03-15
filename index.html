@@ -1040,9 +1040,9 @@ async function submitTrade(){
   chatMsgs.push({role:'user',content:input});renderChat();
   document.getElementById('tradeInput').value='';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildPrompt(),messages:[{role:'user',content:input}]})});
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAAefjfl2S9SneHgF-c7JAOIEq8steHIfg',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:buildPrompt()+'\n\nTRADE: '+input}]}]})});
     const data=await res.json();
-    const raw=data.content?.map(b=>b.text||'').join('')||'';
+    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
     let trade=null;
     try{const m=raw.match(/\{[\s\S]*\}/);if(m){trade=JSON.parse(m[0]);trade.id=Date.now();trade.accountId=logAccId;}}
     catch(e){showLogErr("Couldn't parse. Try being more specific.");logLoading=false;resetLogBtn();return;}
@@ -1282,12 +1282,12 @@ Give:
 Be direct and honest like a good mentor. No fluff.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAAefjfl2S9SneHgF-c7JAOIEq8steHIfg', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:600, messages:[{role:'user',content:prompt}]})
+      body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
     });
     const data = await res.json();
-    const text = data.content?.map(b=>b.text||'').join('')||'';
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     document.getElementById('reflectionContent').innerHTML = '<div style="font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap">' + text + '</div>';
   } catch(e) {
     document.getElementById('reflectionContent').innerHTML = '<div style="font-size:12px;color:var(--red)">Connection error. Try again.</div>';
