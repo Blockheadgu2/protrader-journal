@@ -13,7 +13,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body.theme-crimson{--bg:#0F0508;--bg2:#160810;--bg3:#1E0D14;--card:#240F18;--border:#3A1A28;--border2:#502030;--accent:#CC2244;--accent-dim:#8B1530;--accent-glow:rgba(204,34,68,0.15);--header-bg:#0A0306}
-body.theme-arctic{--bg:#F7FAFC;--bg2:#EDF2F7;--bg3:#E2E8F0;--card:#FFFFFF;--border:#CBD5E0;--border2:#A0AEC0;--accent:#2B6CB0;--accent-dim:#1A4A8A;--accent-glow:rgba(43,108,176,0.12);--header-bg:#1A365D;--text:#1A202C;--text2:#4A5568;--text3:#718096;--green:#276749;--green-dim:#1C4532;--red:#9B2C2C;--red-dim:#742A2A;--amber:#B7791F;--gold:#B7791F}
+body.theme-gold{--bg:#0A0900;--bg2:#100F00;--bg3:#181500;--card:#1C1900;--border:#2E2A00;--border2:#3E3800;--accent:#D4A840;--accent-dim:#9A7820;--accent-glow:rgba(212,168,64,0.15);--header-bg:#080700}
 body.theme-green{--bg:#0D1210;--bg2:#131A14;--bg3:#1A2318;--card:#1E2820;--border:#2A3E2A;--border2:#3A5A3A;--accent:#3DBA5A;--accent-dim:#1E6B35;--accent-glow:rgba(61,186,90,0.15);--header-bg:#0A1208}
 body.theme-dark{--bg:#0D0D0D;--bg2:#141414;--bg3:#1A1A1A;--card:#1E1E1E;--border:#2A2A2A;--border2:#3A3A3A;--accent:#6C63FF;--accent-dim:#4A42CC;--accent-glow:rgba(108,99,255,0.15);--header-bg:#080808}
 body.theme-blue{--bg:#0A0F18;--bg2:#0F1622;--bg3:#141E2E;--card:#182030;--border:#1E3050;--border2:#2A4060;--accent:#4A9EFF;--accent-dim:#1E6ACC;--accent-glow:rgba(74,158,255,0.15);--header-bg:#080C14}
@@ -343,7 +343,7 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
       <div class="tab" onclick="switchPage('settings',this)">⚙ MORE</div>
     </div>
   </div>
-  <div class="app-body">
+  <div class="app-body" id="appBody">
   <!-- PC SIDEBAR -->
   <div class="pc-sidebar" id="pcSidebar">
     <div class="pc-sidebar-brand">
@@ -527,7 +527,7 @@ const sb = createClient(
 const THEMES = [
   {id:'theme-green',   name:'Forest',  colors:['#0D1210','#3DBA5A']},
   {id:'theme-crimson', name:'Crimson', colors:['#0F0508','#CC2244']},
-  {id:'theme-arctic',  name:'Arctic',  colors:['#1A365D','#2B6CB0']},
+  {id:'theme-gold',    name:'Gold',    colors:['#0A0900','#D4A840']},
   {id:'theme-dark',  name:'Void',   colors:['#0D0D0D','#6C63FF']},
   {id:'theme-blue',  name:'Ocean',  colors:['#0A0F18','#4A9EFF']},
   {id:'theme-amber', name:'Ember',  colors:['#110E08','#E8A030']},
@@ -716,6 +716,8 @@ async function login() {
   document.getElementById('hdrUser').textContent = user.display_name||user.username;
   const sbUser = document.getElementById('sidebarUser');
   if(sbUser) sbUser.textContent = 'Signed in as ' + (user.display_name||user.username);
+  setTimeout(fixMobileLayout, 100);
+  setTimeout(fixMobileLayout, 400);
   if(user.role==='admin') document.getElementById('adminSection').style.display='block';
   renderAll();
 }
@@ -748,7 +750,20 @@ function getAccTrades(acc){return trades.filter(t=>t.accountId===acc.id);}
 function ddPct(acc){const p=getAccPnl(acc);return acc.maxDD?Math.min(100,Math.max(0,(-Math.min(0,p)/acc.maxDD)*100)):0;}
 function targetPct(acc){const p=getAccPnl(acc);return acc.profitTarget?Math.min(100,Math.max(0,(Math.max(0,p)/acc.profitTarget)*100)):0;}
 
-function renderAll(){renderHeader();renderDashboard();renderJournal();renderLogPage();renderSettings();}
+function renderAll(){renderHeader();renderDashboard();renderJournal();renderLogPage();renderSettings();fixMobileLayout();}
+
+function fixMobileLayout(){
+  if(window.innerWidth < 768){
+    const header = document.querySelector('.header');
+    if(header){
+      // Use requestAnimationFrame to ensure layout is complete
+      requestAnimationFrame(()=>{
+        const h = header.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--header-h', h + 'px');
+      });
+    }
+  }
+}
 
 // ══════════════════════════════════════════
 // HEADER
@@ -1187,6 +1202,9 @@ document.getElementById('mainApp').style.display='none';
 document.getElementById('authScreen').style.display='none';
 document.getElementById('loadingScreen').style.display='flex';
 showRandomQuote();setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';document.getElementById('authScreen').style.display='flex';},2500);
+window.addEventListener('resize', fixMobileLayout);
+window.addEventListener('load', fixMobileLayout);
+document.fonts && document.fonts.ready.then(fixMobileLayout);
 </script>
 
 </body>
