@@ -1042,10 +1042,18 @@ async function submitTrade(){
   try{
     const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAAefjfl2S9SneHgF-c7JAOIEq8steHIfg',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:buildPrompt()+'\n\nTRADE: '+input}]}]})});
     const data=await res.json();
+    // Check for API errors
+    if(data.error){showLogErr('API Error: '+data.error.message);logLoading=false;resetLogBtn();return;}
     const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!raw){showLogErr('No response from AI. Try again.');logLoading=false;resetLogBtn();return;}
     let trade=null;
-    try{const m=raw.match(/\{[\s\S]*\}/);if(m){trade=JSON.parse(m[0]);trade.id=Date.now();trade.accountId=logAccId;}}
-    catch(e){showLogErr("Couldn't parse. Try being more specific.");logLoading=false;resetLogBtn();return;}
+    try{
+      const cleaned=raw.replace(/```json/g,'').replace(/```/g,'').trim();
+      const jsonMatch=cleaned.match(/{[^]*}/);
+      if(jsonMatch){trade=JSON.parse(jsonMatch[0]);trade.id=Date.now();trade.accountId=logAccId;}
+      else{showLogErr('AI response: '+raw.substring(0,100));logLoading=false;resetLogBtn();return;}
+    }
+    catch(e){showLogErr('Parse error: '+e.message+' | Raw: '+raw.substring(0,80));logLoading=false;resetLogBtn();return;}
     if(trade){
       await dbInsertTrade(currentUser.id,trade);
       trades.unshift(trade);
@@ -1063,7 +1071,7 @@ async function submitTrade(){
       renderChat();renderAll();
       setTimeout(()=>switchPage('journal',document.querySelectorAll('.tab')[1]),400);
     }
-  }catch(e){showLogErr('Connection error.');}
+  }catch(e){console.error('Gemini error:',e);showLogErr('Error: '+e.message);}
   logLoading=false;resetLogBtn();
 }
 
