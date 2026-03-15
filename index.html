@@ -5,18 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ProTrader Journal">
-<title>ProTrader Journal</title>
+<meta name="apple-mobile-web-app-title" content="PaperTrail">
+<title>PaperTrail</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body.theme-crimson{--bg:#0F0508;--bg2:#160810;--bg3:#1E0D14;--card:#240F18;--border:#3A1A28;--border2:#502030;--accent:#CC2244;--accent-dim:#8B1530;--accent-glow:rgba(204,34,68,0.15);--header-bg:#0A0306}
+body.theme-arctic{--bg:#F7FAFC;--bg2:#EDF2F7;--bg3:#E2E8F0;--card:#FFFFFF;--border:#CBD5E0;--border2:#A0AEC0;--accent:#2B6CB0;--accent-dim:#1A4A8A;--accent-glow:rgba(43,108,176,0.12);--header-bg:#1A365D;--text:#1A202C;--text2:#4A5568;--text3:#718096;--green:#276749;--green-dim:#1C4532;--red:#9B2C2C;--red-dim:#742A2A;--amber:#B7791F;--gold:#B7791F}
 body.theme-green{--bg:#0D1210;--bg2:#131A14;--bg3:#1A2318;--card:#1E2820;--border:#2A3E2A;--border2:#3A5A3A;--accent:#3DBA5A;--accent-dim:#1E6B35;--accent-glow:rgba(61,186,90,0.15);--header-bg:#0A1208}
 body.theme-dark{--bg:#0D0D0D;--bg2:#141414;--bg3:#1A1A1A;--card:#1E1E1E;--border:#2A2A2A;--border2:#3A3A3A;--accent:#6C63FF;--accent-dim:#4A42CC;--accent-glow:rgba(108,99,255,0.15);--header-bg:#080808}
 body.theme-blue{--bg:#0A0F18;--bg2:#0F1622;--bg3:#141E2E;--card:#182030;--border:#1E3050;--border2:#2A4060;--accent:#4A9EFF;--accent-dim:#1E6ACC;--accent-glow:rgba(74,158,255,0.15);--header-bg:#080C14}
 body.theme-amber{--bg:#110E08;--bg2:#181208;--bg3:#201808;--card:#241C0A;--border:#3A2A0A;--border2:#4A3A1A;--accent:#E8A030;--accent-dim:#9A6A18;--accent-glow:rgba(232,160,48,0.15);--header-bg:#0C0A04}
 body.theme-red{--bg:#120A0A;--bg2:#180E0E;--bg3:#201414;--card:#241818;--border:#3A2020;--border2:#4A2A2A;--accent:#E05555;--accent-dim:#8B2020;--accent-glow:rgba(224,85,85,0.15);--header-bg:#0C0808}
 body{background:var(--bg);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;color:var(--text,#E8F0E8);min-height:100vh;--text:#E8F0E8;--text2:#8AA88A;--text3:#4A6A4A;--green:#3DBA5A;--green-dim:#1E6B35;--red:#E05555;--red-dim:#8B2020;--amber:#E8A030;--blue:#4A9EFF;--blue-dim:#1E4A6B;--gold:#D4A840;--shadow:0 4px 24px rgba(0,0,0,0.4)}
+
+/* ── PC RESPONSIVE LAYOUT ── */
+.app-container{max-width:1200px;margin:0 auto;position:relative}
+@media(min-width:768px){
+  .header{padding-top:20px;position:sticky;top:0}
+  .page{padding:24px 32px;padding-bottom:40px;max-width:1200px;margin:0 auto}
+  .auth-screen{padding:40px}
+  .auth-card{max-width:420px;padding:40px}
+  .loading-screen{padding:40px}
+
+  /* PC: sidebar-style layout */
+  .pc-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 120px);max-width:1200px;margin:0 auto;gap:0}
+  .pc-sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:120px;height:calc(100vh - 120px);overflow-y:auto}
+  .pc-sidebar-item{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text3);transition:all 0.15s;border-left:3px solid transparent}
+  .pc-sidebar-item:hover{color:var(--text);background:var(--bg3)}
+  .pc-sidebar-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-glow)}
+  .pc-sidebar-icon{font-size:18px;width:22px;text-align:center}
+  .pc-main{padding:28px 32px;overflow-y:auto}
+  .pc-header-inner{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:0 32px}
+
+  /* Better card grid on PC */
+  .acc-grid-pc{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .acc-card{margin-bottom:0}
+
+  /* Wider modals on PC */
+  .modal{max-width:600px;margin:0 auto;border-radius:16px;margin-bottom:40px}
+  .overlay{align-items:center;justify-content:center}
+
+  /* Hide mobile tabs on PC */
+  .tabs{display:none}
+
+  /* Stats strip wider */
+  .sstat{min-width:100px;padding:12px 16px}
+  .sstat-val{font-size:18px}
+
+  /* Trade cards side by side on PC */
+  .trades-grid{display:grid;grid-template-columns:1fr;gap:0}
+
+  /* Bigger fonts on PC */
+  .acc-name{font-size:19px}
+  .acc-pnl-big{font-size:28px}
+}
+
+@media(min-width:1024px){
+  .acc-grid-pc{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Keep mobile padding bottom for nav */
+@media(max-width:767px){
+  .pc-layout{display:block}
+  .pc-sidebar{display:none}
+  .pc-main{padding:0}
+}
 
 /* AUTH */
 .auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
@@ -30,9 +85,11 @@ body{background:var(--bg);font-family:-apple-system,'SF Pro Display','Helvetica 
 /* LOADING */
 .loading-screen{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--bg)}
 .loading-logo{font-size:28px;font-weight:800;color:var(--accent);margin-bottom:20px}
-.loading-spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:28px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:12px;color:var(--text3);margin-top:12px;letter-spacing:1px}
+.loading-quote{font-size:16px;color:var(--text);text-align:center;max-width:280px;line-height:1.6;font-style:italic;margin-bottom:10px;animation:fadeIn 0.8s ease}
+.loading-author{font-size:11px;color:var(--accent);letter-spacing:1.5px;text-align:center;font-weight:700}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* APP */
 .app{display:none}
@@ -201,24 +258,58 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
 </head>
 <body class="theme-green">
 
+<!-- REFLECTION MODAL -->
+<div class="overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-title">🤖 AI Trade Reflection</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px" id="reflectionTitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('reflectionModal')">Close</button>
+    </div>
+    <div class="modal-body" id="reflectionContent"></div>
+  </div>
+</div>
+
 <!-- LOADING -->
 <div class="loading-screen" id="loadingScreen">
-  <div class="loading-logo">ProTrader</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px">
+    <svg width="36" height="36" viewBox="0 0 40 40">
+      <circle cx="7" cy="20" r="3.5" fill="var(--accent)" opacity="0.3"/>
+      <line x1="10.5" y1="20" x2="14" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="18" cy="20" r="5" fill="var(--accent)" opacity="0.6"/>
+      <line x1="23" y1="20" x2="26" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="32" cy="20" r="7" fill="var(--accent)"/>
+    </svg>
+    <div class="loading-logo">PaperTrail</div>
+  </div>
   <div class="loading-spinner"></div>
-  <div class="loading-text">LOADING...</div>
+  <div class="loading-quote" id="loadingQuote"></div>
+  <div class="loading-author" id="loadingAuthor"></div>
 </div>
 
 <!-- AUTH -->
 <div class="auth-screen" id="authScreen" style="display:none">
-  <div class="auth-logo">ProTrader</div>
-  <div class="auth-tagline">Prop Firm Journal</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px">
+    <svg width="36" height="36" viewBox="0 0 40 40">
+      <circle cx="7" cy="20" r="3.5" fill="var(--accent)" opacity="0.3"/>
+      <line x1="10.5" y1="20" x2="14" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="18" cy="20" r="5" fill="var(--accent)" opacity="0.6"/>
+      <line x1="23" y1="20" x2="26" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="32" cy="20" r="7" fill="var(--accent)"/>
+    </svg>
+    <div class="auth-logo">PaperTrail</div>
+  </div>
+  <div class="auth-tagline">Your Trading Trail Starts Here</div>
   <div class="auth-card">
     <div class="auth-title">Sign In</div>
     <div class="auth-err" id="authErr"></div>
     <div class="form-group"><label class="form-label">USERNAME</label><input class="form-input" id="authUser" placeholder="Enter username" autocomplete="username"></div>
     <div class="form-group"><label class="form-label">PASSWORD</label><input class="form-input" id="authPass" type="password" placeholder="Enter password" autocomplete="current-password"></div>
     <button class="btn btn-accent" id="authBtn" onclick="login()">SIGN IN</button>
-    <div class="auth-footer">ProTrader Journal · Private Beta</div>
+    <div class="auth-footer">PaperTrail · Private Beta</div>
   </div>
 </div>
 
@@ -226,7 +317,16 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
 <div class="app" id="mainApp">
   <div class="header">
     <div class="header-top">
-      <div class="logo-wrap"><div class="logo-name">ProTrader</div><div class="logo-sub">PROP FIRM DASHBOARD</div></div>
+      <div class="logo-wrap" style="display:flex;align-items:center;gap:10px">
+        <svg width="32" height="32" viewBox="0 0 40 40">
+          <circle cx="7" cy="20" r="3.5" fill="var(--accent)" opacity="0.3"/>
+          <line x1="10.5" y1="20" x2="14" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
+          <circle cx="18" cy="20" r="5" fill="var(--accent)" opacity="0.6"/>
+          <line x1="23" y1="20" x2="26" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.6"/>
+          <circle cx="32" cy="20" r="7" fill="var(--accent)"/>
+        </svg>
+        <div><div class="logo-name">PaperTrail</div><div class="logo-sub">TRACK · REVIEW · IMPROVE</div></div>
+      </div>
       <div class="hdr-right"><div class="hdr-pnl" id="hdrPnl">$0.00</div><div class="hdr-pnl-lbl">TOTAL P&L</div><div class="hdr-user" id="hdrUser"></div></div>
     </div>
     <div class="stats-strip" id="statsStrip"></div>
@@ -237,11 +337,47 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
       <div class="tab" onclick="switchPage('settings',this)">⚙ MORE</div>
     </div>
   </div>
-  <div class="page active" id="page-dashboard"><div id="accountList"></div></div>
-  <div class="page" id="page-journal">
-    <div class="filter-row" id="journalFilter"></div>
-    <div id="tradeList"></div>
-  </div>
+  <div class="pc-layout">
+    <!-- PC SIDEBAR (hidden on mobile) -->
+    <div class="pc-sidebar" id="pcSidebar">
+      <div style="padding:16px 24px 24px;border-bottom:1px solid var(--border);margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <svg width="26" height="26" viewBox="0 0 40 40">
+            <circle cx="7" cy="20" r="3.5" fill="var(--accent)" opacity="0.3"/>
+            <line x1="10.5" y1="20" x2="14" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="18" cy="20" r="5" fill="var(--accent)" opacity="0.6"/>
+            <line x1="23" y1="20" x2="26" y2="20" stroke="var(--accent)" stroke-width="1.5" opacity="0.6"/>
+            <circle cx="32" cy="20" r="7" fill="var(--accent)"/>
+          </svg>
+          <div style="font-size:20px;font-weight:800;color:var(--accent)">PaperTrail</div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-top:2px">TRACK · REVIEW · IMPROVE</div>
+      </div>
+      <div class="pc-sidebar-item active" id="sb-dashboard" onclick="switchPage('dashboard',null);updateSidebar('sb-dashboard')">
+        <span class="pc-sidebar-icon">⊞</span> Accounts
+      </div>
+      <div class="pc-sidebar-item" id="sb-journal" onclick="switchPage('journal',null);updateSidebar('sb-journal')">
+        <span class="pc-sidebar-icon">≡</span> Journal
+      </div>
+      <div class="pc-sidebar-item" id="sb-log" onclick="switchPage('log',null);updateSidebar('sb-log')">
+        <span class="pc-sidebar-icon">+</span> Log Trade
+      </div>
+      <div class="pc-sidebar-item" id="sb-settings" onclick="switchPage('settings',null);updateSidebar('sb-settings')">
+        <span class="pc-sidebar-icon">⚙</span> Settings
+      </div>
+      <div style="position:absolute;bottom:24px;left:0;right:0;padding:0 24px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px" id="sidebarUser"></div>
+        <button onclick="signOut()" style="width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;font-weight:600">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="pc-main">
+      <div class="page active" id="page-dashboard"><div id="accountList" class="acc-grid-pc"></div></div>
+      <div class="page" id="page-journal">
+        <div class="filter-row" id="journalFilter"></div>
+        <div id="tradeList"></div>
+      </div>
   <div class="page" id="page-log">
     <div class="section-hdr">SELECT ACCOUNT</div>
     <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:16px;padding-bottom:4px" id="accChips"></div>
@@ -280,6 +416,8 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
     <button class="btn btn-ghost" onclick="openModal('addRuleModal')" style="margin-bottom:20px">+ ADD RULE</button>
     <button class="btn btn-ghost" onclick="signOut()" style="color:var(--red);border-color:var(--red-dim)">Sign Out</button>
   </div>
+    </div><!-- end pc-main -->
+  </div><!-- end pc-layout -->
 </div>
 
 <!-- MODALS -->
@@ -294,7 +432,7 @@ textarea.form-input{min-height:80px;resize:vertical;line-height:1.6}
         <div class="type-opt selected" id="typeOptC" onclick="selType('combine')"><div class="type-opt-icon">🎯</div><div class="type-opt-name">Combine</div><div class="type-opt-desc">Evaluation — trying to pass</div></div>
         <div class="type-opt" id="typeOptE" onclick="selType('express')"><div class="type-opt-icon">✅</div><div class="type-opt-name">Express</div><div class="type-opt-desc">Passed — live funded</div></div>
       </div>
-      <div class="form-group"><label class="form-label">PROP FIRM</label><select class="form-select" id="addFirm"><option>TopStep</option><option>Apex</option><option>FTMO</option><option>MyFundedFutures</option><option>TradeDay</option><option>Bulenox</option><option>Earn2Trade</option><option>Other</option></select></div>
+      <div class="form-group"><label class="form-label">PROP FIRM</label><select class="form-select" id="addFirm"><option>TopStep</option><option>Apex Trader Funding</option><option>FTMO</option><option>MyFundedFutures</option><option>TradeDay</option><option>Bulenox</option><option>Earn2Trade</option><option>Alpha Futures</option><option>Lucid Trading</option><option>Take Profit Trader</option><option>Funded Trading Plus</option><option>The Funded Trader</option><option>E8 Funding</option><option>Funding Pips</option><option>True Forex Funds</option><option>Other</option></select></div>
       <div class="form-group"><label class="form-label">ACCOUNT NAME</label><input class="form-input" id="addName" placeholder="TopStep 50k #2"></div>
       <div class="form-group"><label class="form-label">ACCOUNT SIZE ($)</label><input class="form-input" id="addSize" type="number" placeholder="50000"></div>
       <div class="form-group"><label class="form-label">MAX LOSS LIMIT ($)</label><input class="form-input" id="addDD" type="number" placeholder="2000"></div>
@@ -360,7 +498,9 @@ const sb = createClient(
 // CONSTANTS
 // ══════════════════════════════════════════
 const THEMES = [
-  {id:'theme-green', name:'Forest', colors:['#0D1210','#3DBA5A']},
+  {id:'theme-green',   name:'Forest',  colors:['#0D1210','#3DBA5A']},
+  {id:'theme-crimson', name:'Crimson', colors:['#0F0508','#CC2244']},
+  {id:'theme-arctic',  name:'Arctic',  colors:['#1A365D','#2B6CB0']},
   {id:'theme-dark',  name:'Void',   colors:['#0D0D0D','#6C63FF']},
   {id:'theme-blue',  name:'Ocean',  colors:['#0A0F18','#4A9EFF']},
   {id:'theme-amber', name:'Ember',  colors:['#110E08','#E8A030']},
@@ -493,6 +633,14 @@ async function dbSaveSettings(userId, theme) {
 // ══════════════════════════════════════════
 async function loadUserData() {
   const userId = currentUser.id;
+  if(!userId) {
+    // Fallback mode - no Supabase connection
+    accounts = []; trades = []; links = [];
+    rules = [...DEFAULT_RULES];
+    currentTheme = 'theme-green';
+    applyTheme(currentTheme);
+    return;
+  }
 
   const [dbAccs, dbTrades, dbLinks, dbRules, dbSettings] = await Promise.all([
     dbLoadAccounts(userId), dbLoadTrades(userId), dbLoadLinks(userId), dbLoadRules(userId), dbLoadSettings(userId)
@@ -523,18 +671,24 @@ async function login() {
   if(!u||!p){ showAuthErr('Please enter username and password'); return; }
   document.getElementById('authBtn').textContent='SIGNING IN...';
   document.getElementById('authBtn').disabled=true;
-  const user = await dbLoadUser(u, p);
+  let user = await dbLoadUser(u, p);
+  // Fallback: if Supabase fails, check hardcoded admin
+  if(!user && u === 'Simonidk' && p === 'Damak10jhapa') {
+    user = { id: null, username: 'Simonidk', display_name: 'Simon', role: 'admin' };
+  }
   document.getElementById('authBtn').textContent='SIGN IN';
   document.getElementById('authBtn').disabled=false;
   if(!user){ showAuthErr('Incorrect username or password'); return; }
   currentUser = user;
   document.getElementById('authScreen').style.display='none';
   document.getElementById('loadingScreen').style.display='flex';
+  showRandomQuote();
   await loadUserData();
   allUsers = await dbLoadAllUsers();
-  document.getElementById('loadingScreen').style.display='none';
-  document.getElementById('mainApp').style.display='block';
+  setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';document.getElementById('mainApp').style.display='block';},2500);
   document.getElementById('hdrUser').textContent = user.display_name||user.username;
+  const sbUser = document.getElementById('sidebarUser');
+  if(sbUser) sbUser.textContent = 'Signed in as ' + (user.display_name||user.username);
   if(user.role==='admin') document.getElementById('adminSection').style.display='block';
   renderAll();
 }
@@ -594,7 +748,7 @@ function renderHeader(){
 // ══════════════════════════════════════════
 function renderDashboard(){
   const el=document.getElementById('accountList');
-  if(!accounts.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">Welcome to ProTrader</div><div class="empty-sub">Add your first prop firm account to get started.<br><br>Tap ⚙ More → Add Account below.</div></div>`;return;}
+  if(!accounts.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">Welcome to PaperTrail</div><div class="empty-sub">Add your first prop firm account to get started.<br><br>Tap ⚙ More → Add Account below.</div></div>`;return;}
   el.innerHTML=accounts.map(acc=>{
     const pnl=getAccPnl(acc),at=getAccTrades(acc);
     const wins=at.filter(t=>t.result==='WIN').length,losses=at.filter(t=>t.result==='LOSS').length;
@@ -709,7 +863,10 @@ function renderJournal(){
         </div>
         ${t.what_i_did_right&&t.what_i_did_right!=='-'?`<div class="tnote-lbl" style="color:var(--green)">✅ WHAT I DID RIGHT</div><div class="tnote-txt">${t.what_i_did_right}</div>`:''}
         ${t.lesson_learned&&t.lesson_learned!=='-'?`<div class="tnote-lbl" style="color:var(--red)">📚 LESSON LEARNED</div><div class="tnote-txt">${t.lesson_learned}</div>`:''}
-        <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red-dim)" onclick="delTrade(${t.id},event)">Delete</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <button class="btn btn-accent btn-sm" onclick="openReflection(${t.id});event.stopPropagation()" style="font-size:11px">🤖 AI Reflection</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red-dim)" onclick="delTrade(${t.id},event)">Delete</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -895,14 +1052,114 @@ async function removeUser(id,e){
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');if(activeChart){activeChart.destroy();activeChart=null;}}
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);}));
-function switchPage(page,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');if(el)el.classList.add('active');renderAll();}
+function switchPage(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(el) el.classList.add('active');
+  renderAll();
+}
+
+function updateSidebar(activeId){
+  document.querySelectorAll('.pc-sidebar-item').forEach(i=>i.classList.remove('active'));
+  const el=document.getElementById(activeId);
+  if(el) el.classList.add('active');
+}
 document.getElementById('tradeInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitTrade();}});
+
+// ══════════════════════════════════════════
+// MOTIVATIONAL QUOTES
+// ══════════════════════════════════════════
+const QUOTES = [
+  {q:"The goal of a successful trader is to make the best trades. Money is secondary.",a:"Alexander Elder"},
+  {q:"Risk comes from not knowing what you are doing.",a:"Warren Buffett"},
+  {q:"The market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett"},
+  {q:"In investing what is comfortable is rarely profitable.",a:"Robert Arnott"},
+  {q:"The four most dangerous words in investing are: this time it is different.",a:"Sir John Templeton"},
+  {q:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},
+  {q:"Every loss is a lesson. Every lesson is progress.",a:"PaperTrail"},
+  {q:"Discipline is the bridge between trading goals and trading reality.",a:"PaperTrail"},
+  {q:"The best trade you can make is the one you pass on.",a:"PaperTrail"},
+  {q:"Process over profits. Consistency over big wins.",a:"PaperTrail"},
+  {q:"One good setup is worth more than ten forced trades.",a:"PaperTrail"},
+  {q:"Your job is not to predict the market. Your job is to react to it.",a:"PaperTrail"},
+  {q:"A funded account is not the destination. Consistency is.",a:"PaperTrail"},
+  {q:"Losses are tuition. Pay attention in class.",a:"PaperTrail"},
+  {q:"The trader you are becoming is built one disciplined decision at a time.",a:"PaperTrail"},
+  {q:"You do not need to trade every day. You need to trade the right days.",a:"PaperTrail"},
+  {q:"The market will always be there tomorrow. Your account might not be.",a:"PaperTrail"},
+  {q:"Amateurs focus on entries. Professionals focus on exits and risk.",a:"PaperTrail"},
+  {q:"In trading patience is not just a virtue. It is a strategy.",a:"PaperTrail"},
+  {q:"Small consistent gains compound into something remarkable.",a:"PaperTrail"},
+  {q:"Protect the downside and the upside takes care of itself.",a:"PaperTrail"},
+  {q:"Trade what you see not what you think.",a:"PaperTrail"},
+  {q:"Your edge only works if you stick to it.",a:"PaperTrail"},
+  {q:"One bad trade can erase a week of good ones. Risk management is everything.",a:"PaperTrail"},
+  {q:"Review your losers more than your winners. That is where the real growth is.",a:"PaperTrail"},
+  {q:"Funded today. Consistent tomorrow. That is the goal.",a:"PaperTrail"},
+  {q:"The journal does not lie. Trust the data.",a:"PaperTrail"},
+];
+
+function showRandomQuote(){
+  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  const qEl = document.getElementById('loadingQuote');
+  const aEl = document.getElementById('loadingAuthor');
+  if(qEl) qEl.textContent = q.q;
+  if(aEl) aEl.textContent = '— ' + q.a;
+}
+
+// ══════════════════════════════════════════
+// AI TRADE REFLECTION
+// ══════════════════════════════════════════
+let reflectionTrade = null;
+
+async function openReflection(tradeId) {
+  const trade = trades.find(t => t.id === tradeId);
+  if(!trade) return;
+  reflectionTrade = trade;
+  document.getElementById('reflectionTitle').textContent = trade.date + ' — ' + (trade.result||'');
+  document.getElementById('reflectionContent').innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)"><div class="loading-spinner" style="margin:0 auto 12px"></div><div style="font-size:12px;letter-spacing:1px">ANALYSING TRADE...</div></div>';
+  openModal('reflectionModal');
+  
+  const rulesList = rules.map(r => r.category + ': ' + r.text).join('. ');
+  const prompt = `You are a trading coach reviewing this trade. Be specific, constructive and encouraging. Keep it concise — 3 sections max.
+
+TRADE DETAILS:
+Date: ${trade.date} | Session: ${trade.session} | Direction: ${trade.direction}
+Result: ${trade.result} | P&L: $${trade.pnl} | Grade: ${trade.grade}
+HTF Key Level: ${trade.htf_key_level} | Unfilled Gap: ${trade.unfilled_gap}
+Inversion TF: ${trade.inversion_tf} | SMT: ${trade.smt} | ES Checked: ${trade.es_checked}
+Summary: ${trade.summary}
+What went right: ${trade.what_i_did_right}
+Lesson noted: ${trade.lesson_learned}
+
+TRADER RULES: ${rulesList}
+
+Give:
+1. WHAT WENT WELL (even on losses find something)
+2. ROOT CAUSE (the real reason this trade went wrong or could be improved)  
+3. ONE SPECIFIC ACTION (one concrete thing to do differently next time)
+
+Be direct and honest like a good mentor. No fluff.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:600, messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const text = data.content?.map(b=>b.text||'').join('')||'';
+    document.getElementById('reflectionContent').innerHTML = '<div style="font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap">' + text + '</div>';
+  } catch(e) {
+    document.getElementById('reflectionContent').innerHTML = '<div style="font-size:12px;color:var(--red)">Connection error. Try again.</div>';
+  }
+}
 
 // INIT — show loading briefly then auth
 document.getElementById('mainApp').style.display='none';
 document.getElementById('authScreen').style.display='none';
 document.getElementById('loadingScreen').style.display='flex';
-setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';document.getElementById('authScreen').style.display='flex';},800);
+showRandomQuote();setTimeout(()=>{document.getElementById('loadingScreen').style.display='none';document.getElementById('authScreen').style.display='flex';},2500);
 </script>
 </body>
 </html>
